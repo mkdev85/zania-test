@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import React from "react";
+
+import { useOnMount } from "@cat/hooks/useOnMount";
 
 interface ImageOverlayProps {
   imageSrc: string;
@@ -6,19 +8,19 @@ interface ImageOverlayProps {
 }
 
 const ImageOverlay: React.FC<ImageOverlayProps> = ({ imageSrc, onClose }) => {
-  useEffect(() => {
+  useOnMount(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-  
+  });
+
   return (
     <div
       className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50"
