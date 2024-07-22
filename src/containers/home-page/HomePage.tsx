@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 import { Draggable, DropResult } from "react-beautiful-dnd";
 import dynamic from "next/dynamic";
@@ -15,6 +15,8 @@ import { PageLoader } from "@cat/ui-kit/PageLoader/PageLoader";
 import { useSnackbar } from "notistack";
 import LastSavedTime from "./components/LastSavedTime";
 import { isObjectsEqual } from "@cat/helpers";
+import { Message } from "@cat/ui-kit/Message/Message";
+import { MessageType } from "@cat/ui-kit/Message/Message.props";
 
 const DragDropContextNoSSR = dynamic(
   () => import("react-beautiful-dnd").then((mod) => mod.DragDropContext),
@@ -25,6 +27,7 @@ export const HomePage: React.FC = () => {
   const [items, setItems] = useState<AlbumData[]>([]);
   const [isChangesDetected, setChangesDetected] = useState<boolean>(false);
   const [overlayImage, setOverlayImage] = useState<string | null>(null);
+  const [isError, setError] = useState<boolean>(false);
 
   const [lastSaveTime, setLastSaveTime] = useState<number>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -34,6 +37,7 @@ export const HomePage: React.FC = () => {
 
   useOnMount(() => {
     setIsFetching(true);
+    setError(false);
     getAlbum()
     .then((result) => {
       setItems(result.data);
@@ -41,6 +45,7 @@ export const HomePage: React.FC = () => {
       setLastSaveTime(result.lastSavedTime);
     })
     .catch(() => {
+      setError(true);
       enqueueSnackbar({
         message: "Error while fetching the Album data!!",
         variant: "error",
@@ -98,18 +103,34 @@ export const HomePage: React.FC = () => {
     return <PageLoader />;
   }
 
+  if (isError) {
+    return (
+      <Message 
+        type={MessageType.ERROR} 
+        message="Error while fetching the album data. Please refresh this page and try again :)"
+      />
+    )    
+  }
+
+  if (!isFetching && items?.length === 0) {
+    return (
+      <Message 
+        type={MessageType.SUCCESS} 
+        message="No Album Data Found!"
+      />
+    )  
+  }
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between w-full my-5 ">
         {
-          isChangesDetected && (<p className="text-left text-green-900 font-medium blink"> 
+          isChangesDetected && (<p className="text-left text-green-900 font-medium"> 
             Changes Detected!! New Snapshop saving is in progress... 
           </p>)  
         }
         <LastSavedTime time={lastSaveTime}/>
       </div>
-      
-      
       <DragDropContextNoSSR onDragEnd={handleDragEnd}>
         <DroppableCustom
           droppableId="cards"
