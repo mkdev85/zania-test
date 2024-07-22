@@ -3,6 +3,7 @@ import { bootStrap } from "@cat/lib/bootStrap";
 import "@cat/styles/globals.css";
 import { PageLoader } from "@cat/ui-kit/PageLoader/PageLoader";
 import type { AppProps } from "next/app";
+import { SnackbarProvider } from "notistack";
 import { useState } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -18,5 +19,14 @@ export default function App({ Component, pageProps }: AppProps) {
     return <PageLoader />;
   }
 
-  return <Component {...pageProps} />;
+  return (
+    <SnackbarProvider
+      anchorOrigin={{
+        horizontal: "right",
+        vertical: "top",
+      }}
+    >
+      <Component {...pageProps} />
+    </SnackbarProvider>
+  );
 }
