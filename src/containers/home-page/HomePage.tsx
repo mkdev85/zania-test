@@ -12,6 +12,9 @@ import { getAlbum, type AlbumData } from "@cat/services/getAlbum";
 import { updateAlbum } from "@cat/services/updateAlbum";
 import { POLLING_TIME_IN_MS } from "@cat/constants";
 import { getLastSavedTime } from "@cat/services/getLastSavedTime";
+import { timeAgo } from "@cat/helpers";
+import { PageLoader } from "@cat/ui-kit/PageLoader/PageLoader";
+import { useSnackbar } from "notistack";
 
 const DragDropContextNoSSR = dynamic(
   () => import("react-beautiful-dnd").then((mod) => mod.DragDropContext),
@@ -21,12 +24,18 @@ const DragDropContextNoSSR = dynamic(
 export const HomePage: React.FC = () => {
   const [items, setItems] = useState<AlbumData[]>([]);
   const [overlayImage, setOverlayImage] = useState<string | null>(null);
-  const [lastSaveTime, setLastSaveTime] = useState<string>();
+
+  const [lastSaveTime, setLastSaveTime] = useState<number>();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
   const prevItemsRef = useRef<AlbumData[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
 
   useOnMount(() => {
+    setIsFetching(true);
     getAlbum().then((result) => {
       setItems(result.data);
+      setIsFetching(false);
       prevItemsRef.current = result.data;
       setLastSaveTime(result.lastSavedTime);
     });
@@ -39,8 +48,17 @@ export const HomePage: React.FC = () => {
         const { isSuccess } = await updateAlbum(items);
 
         if (isSuccess) {
+          enqueueSnackbar({
+            message: "Saved last snapshot successfully!!",
+            variant: "info",
+          });
           const data = await getLastSavedTime();
           setLastSaveTime(data.lastSavedTime);
+        } else {
+          enqueueSnackbar({
+            message: "Something went wrong!!",
+            variant: "error",
+          });
         }
       }
     }, POLLING_TIME_IN_MS);
@@ -66,9 +84,13 @@ export const HomePage: React.FC = () => {
     setOverlayImage(null);
   };
 
+  if (isFetching) {
+    return <PageLoader />;
+  }
+
   return (
     <div className="container mx-auto p-4">
-      <p>{lastSaveTime}</p>
+      <p>{timeAgo(lastSaveTime)} ago</p>
       <DragDropContextNoSSR onDragEnd={handleDragEnd}>
         <DroppableCustom
           droppableId="cards"
