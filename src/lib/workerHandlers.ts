@@ -1,5 +1,4 @@
 import { ALBUM_DATA_WSK, LAST_UPDATE_DATE_TIME } from "@cat/constants";
-import { getCurrentDateTime } from "@cat/helpers";
 import type { AlbumData } from "@cat/services/getAlbum";
 import localforage from "localforage";
 import { http, HttpResponse } from "msw";
@@ -50,7 +49,7 @@ export const workerHandlers = [
     try {
       const input = await request.json();
       await localforage.setItem(ALBUM_DATA_WSK, input);
-      await localforage.setItem(LAST_UPDATE_DATE_TIME, getCurrentDateTime());
+      await localforage.setItem(LAST_UPDATE_DATE_TIME, Date.now());
       return HttpResponse.json({
         isSuccess: true,
         message: "Album order is updated!",

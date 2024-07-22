@@ -1,13 +1,41 @@
-export const getCurrentDateTime = () => {
-  const now = new Date();
+/**
+ * Converts a timestamp into a human-readable relative time string.
+ *
+ * @param {number} timestamp - The timestamp in milliseconds.
+ * @returns {string} - The relative time string (e.g., "52 sec", "1 min", "2 hr", "1 d", "2 weeks", "1 month", "1 year").
+ */
+export const timeAgo = (timestamp?: number): string => {
+  if (!timestamp) {
+    return "";
+  }
 
-  const day = String(now.getDate()).padStart(2, "0");
-  const month = String(now.getMonth() + 1).padStart(2, "0"); // January is 0!
-  const year = now.getFullYear();
+  const now = Date.now();
+  const elapsed = now - timestamp;
 
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
+  const units = [
+    { max: 60 * 1000, value: 1000, label: "sec" },
+    { max: 60 * 60 * 1000, value: 60 * 1000, label: "min" },
+    { max: 24 * 60 * 60 * 1000, value: 60 * 60 * 1000, label: "hr" },
+    { max: 7 * 24 * 60 * 60 * 1000, value: 24 * 60 * 60 * 1000, label: "d" },
+    {
+      max: 4 * 7 * 24 * 60 * 60 * 1000,
+      value: 7 * 24 * 60 * 60 * 1000,
+      label: "week",
+    },
+    {
+      max: 12 * 4 * 7 * 24 * 60 * 60 * 1000,
+      value: 4 * 7 * 24 * 60 * 60 * 1000,
+      label: "month",
+    },
+    { max: Infinity, value: 12 * 4 * 7 * 24 * 60 * 60 * 1000, label: "year" },
+  ];
 
-  return `${day}/${month}/${year}:${hours}:${minutes}:${seconds}`;
+  for (const unit of units) {
+    if (elapsed < unit.max) {
+      const value = Math.floor(elapsed / unit.value);
+      return `${value} ${unit.label}${value > 1 ? "s" : ""}`;
+    }
+  }
+
+  return "";
 };

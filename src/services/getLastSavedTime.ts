@@ -1,5 +1,5 @@
 export interface GetLastSavedTime {
-  lastSavedTime: string;
+  lastSavedTime: number;
   isSuccess: true;
 }
 

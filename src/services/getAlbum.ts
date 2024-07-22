@@ -7,7 +7,7 @@ export interface AlbumData {
 
 export interface GetAlbumBackendResponse {
   data: AlbumData[];
-  lastSavedTime: string;
+  lastSavedTime: number;
 }
 
 export const getAlbum = async () => {
