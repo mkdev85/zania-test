@@ -7,8 +7,8 @@ import { http, HttpResponse } from "msw";
 export const workerHandlers = [
   http.get("mockServiceWorker.js/api/album", async () => {
     try {
-      // Fake delay 5 seconds
-      await fakeDelay(5000);
+      // Fake delay 3 seconds
+      await fakeDelay(3000);
       const albumData = (await localforage.getItem(
         ALBUM_DATA_WSK
       )) as AlbumData;
@@ -33,8 +33,8 @@ export const workerHandlers = [
 
   http.post("mockServiceWorker.js/api/album", async ({ request }) => {
     try {
-      // Fake delay 5 seconds
-      await fakeDelay(5000);
+      // Fake delay 3 seconds
+      await fakeDelay(3000);
       const input = await request.json();
       await localforage.setItem(ALBUM_DATA_WSK, input);
       await localforage.setItem(LAST_UPDATE_DATE_TIME, Date.now());
