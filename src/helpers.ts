@@ -48,3 +48,14 @@ export const timeAgo = (timestamp?: number): string => {
 export const fakeDelay = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ * Method to check if both objects are same or not
+ * 
+ * @param obj1 
+ * @param obj2 
+ * @returns A boolean value  
+ */
+export const isObjectsEqual = (obj1: Object, obj2: Object): boolean => {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}

@@ -14,6 +14,7 @@ import { POLLING_TIME_IN_MS } from "@cat/constants";
 import { PageLoader } from "@cat/ui-kit/PageLoader/PageLoader";
 import { useSnackbar } from "notistack";
 import LastSavedTime from "./components/LastSavedTime";
+import { isObjectsEqual } from "@cat/helpers";
 
 const DragDropContextNoSSR = dynamic(
   () => import("react-beautiful-dnd").then((mod) => mod.DragDropContext),
@@ -33,17 +34,25 @@ export const HomePage: React.FC = () => {
 
   useOnMount(() => {
     setIsFetching(true);
-    getAlbum().then((result) => {
+    getAlbum()
+    .then((result) => {
       setItems(result.data);
-      setIsFetching(false);
       prevItemsRef.current = result.data;
       setLastSaveTime(result.lastSavedTime);
+    })
+    .catch(() => {
+      enqueueSnackbar({
+        message: "Error while fetching the Album data!!",
+        variant: "error",
+      });
+    }).finally(() => {
+      setIsFetching(false);
     });
   });
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      if (JSON.stringify(prevItemsRef.current) !== JSON.stringify(items)) {
+      if (!isObjectsEqual(prevItemsRef.current, items)) {
         setChangesDetected(true);
         prevItemsRef.current = items;
         const { isSuccess } = await updateAlbum(items);
