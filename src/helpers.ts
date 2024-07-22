@@ -13,7 +13,6 @@ export const timeAgo = (timestamp?: number): string => {
   const elapsed = now - timestamp;
 
   const units = [
-    { max: 60 * 1000, value: 1000, label: "sec" },
     { max: 60 * 60 * 1000, value: 60 * 1000, label: "min" },
     { max: 24 * 60 * 60 * 1000, value: 60 * 60 * 1000, label: "hr" },
     { max: 7 * 24 * 60 * 60 * 1000, value: 24 * 60 * 60 * 1000, label: "d" },
@@ -39,3 +38,13 @@ export const timeAgo = (timestamp?: number): string => {
 
   return "";
 };
+
+/**
+ * Creates a fake delay for a given duration.
+ * 
+ * @param ms - The duration of the delay in milliseconds.
+ * @returns A promise that resolves after the specified duration.
+ */
+export const fakeDelay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
