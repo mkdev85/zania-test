@@ -6,7 +6,7 @@ export interface UpdateAlbumBackendResponse {
 }
 
 export const updateAlbum = async (items: AlbumData[]) => {
-  const response = await fetch("mockServiceWorker.js/api/album", {
+  const response = await fetch("mockServiceWorker.js/api/v1/albums", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

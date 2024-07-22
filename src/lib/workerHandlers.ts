@@ -5,7 +5,7 @@ import localforage from "localforage";
 import { http, HttpResponse } from "msw";
 
 export const workerHandlers = [
-  http.get("mockServiceWorker.js/api/album", async () => {
+  http.get("mockServiceWorker.js/api/v1/albums", async () => {
     try {
       // Fake delay 3 seconds
       await fakeDelay(3000);
@@ -31,7 +31,7 @@ export const workerHandlers = [
     }
   }),
 
-  http.post("mockServiceWorker.js/api/album", async ({ request }) => {
+  http.post("mockServiceWorker.js/api/v1/albums", async ({ request }) => {
     try {
       // Fake delay 3 seconds
       await fakeDelay(3000);
