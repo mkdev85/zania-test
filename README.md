@@ -41,5 +41,6 @@ This is a frontend app. In this repository, we focus on the `part-1`, `part-3`, 
 - Apart from this, we are also displaying the message 'Changes Detected!! New Snapshop saving is in progress... ' and once changes stored, then also, we are displaying success notification to the user.
 
 ## Please have a look at the hypothetical API design doc:
-https://docs.google.com/document/d/1Q1E_n4wT_yiZ65DOb2F0ucR8VZQHyYciB59nRuguMNk/edit?usp=sharing
+<a href="https://docs.google.com/document/d/1Q1E_n4wT_yiZ65DOb2F0ucR8VZQHyYciB59nRuguMNk/edit?usp=sharing" target="_blank">Refer this link to view the API design doc</a>
+
 
