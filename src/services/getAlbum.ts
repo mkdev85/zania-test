@@ -13,7 +13,7 @@ export interface GetAlbumBackendResponse {
 export const getAlbum = async () => {
   const response = await fetch("mockServiceWorker.js/api/album");
 
-  if (!response.ok) {
+  if (!response?.ok) {
     throw new Error("Network response was not ok");
   }
 

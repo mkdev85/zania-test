@@ -31,4 +31,4 @@ const ImageOverlay: React.FC<ImageOverlayProps> = ({ imageSrc, onClose }) => {
   );
 };
 
-export default ImageOverlay;
+export default React.memo(ImageOverlay);

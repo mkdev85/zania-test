@@ -6,7 +6,7 @@ export interface GetLastSavedTime {
 export const getLastSavedTime = async () => {
   const response = await fetch("mockServiceWorker.js/api/last-saved");
 
-  if (!response.ok) {
+  if (!response?.ok) {
     throw new Error("Network response was not ok");
   }
 

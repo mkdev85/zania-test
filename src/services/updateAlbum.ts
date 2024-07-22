@@ -14,7 +14,7 @@ export const updateAlbum = async (items: AlbumData[]) => {
     body: JSON.stringify(items),
   });
 
-  if (!response.ok) {
+  if (!response?.ok) {
     throw new Error("Network response was not ok");
   }
 

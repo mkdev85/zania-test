@@ -35,9 +35,9 @@ const Card: React.FC<CardProps> = ({ item, onClick, thumbnail }) => {
           className="w-full h-32 object-cover"
         />
       )}
-      <h2 className="mt-2 text-lg font-semibold">{item.title}</h2>
+      <h2 className="mt-2 text-lg font-semibold text-center">{item.title}</h2>
     </div>
   );
 };
 
-export default Card;
+export default React.memo(Card);

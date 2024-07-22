@@ -11,10 +11,9 @@ import { useOnMount } from "@cat/hooks/useOnMount";
 import { getAlbum, type AlbumData } from "@cat/services/getAlbum";
 import { updateAlbum } from "@cat/services/updateAlbum";
 import { POLLING_TIME_IN_MS } from "@cat/constants";
-import { getLastSavedTime } from "@cat/services/getLastSavedTime";
-import { timeAgo } from "@cat/helpers";
 import { PageLoader } from "@cat/ui-kit/PageLoader/PageLoader";
 import { useSnackbar } from "notistack";
+import LastSavedTime from "./components/LastSavedTime";
 
 const DragDropContextNoSSR = dynamic(
   () => import("react-beautiful-dnd").then((mod) => mod.DragDropContext),
@@ -23,6 +22,7 @@ const DragDropContextNoSSR = dynamic(
 
 export const HomePage: React.FC = () => {
   const [items, setItems] = useState<AlbumData[]>([]);
+  const [isChangesDetected, setChangesDetected] = useState<boolean>(false);
   const [overlayImage, setOverlayImage] = useState<string | null>(null);
 
   const [lastSaveTime, setLastSaveTime] = useState<number>();
@@ -44,6 +44,7 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     const intervalId = setInterval(async () => {
       if (JSON.stringify(prevItemsRef.current) !== JSON.stringify(items)) {
+        setChangesDetected(true);
         prevItemsRef.current = items;
         const { isSuccess } = await updateAlbum(items);
 
@@ -52,14 +53,14 @@ export const HomePage: React.FC = () => {
             message: "Saved last snapshot successfully!!",
             variant: "info",
           });
-          const data = await getLastSavedTime();
-          setLastSaveTime(data.lastSavedTime);
+          setLastSaveTime(Date.now());
         } else {
           enqueueSnackbar({
-            message: "Something went wrong!!",
+            message: "Error while storing the last snapshop!!",
             variant: "error",
           });
         }
+        setChangesDetected(false);
       }
     }, POLLING_TIME_IN_MS);
 
@@ -90,7 +91,16 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <p>{timeAgo(lastSaveTime)} ago</p>
+      <div className="flex justify-between w-full my-5 ">
+        {
+          isChangesDetected && (<p className="text-left text-green-900 font-medium blink"> 
+            Changes Detected!! New Snapshop saving is in progress... 
+          </p>)  
+        }
+        <LastSavedTime time={lastSaveTime}/>
+      </div>
+      
+      
       <DragDropContextNoSSR onDragEnd={handleDragEnd}>
         <DroppableCustom
           droppableId="cards"
