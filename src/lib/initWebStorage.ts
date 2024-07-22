@@ -15,8 +15,8 @@ export const initWebStorage = async () => {
   localforage
     .ready()
     .then(async () => {
-      const data = await localforage.getItem(ALBUM_DATA_WSK);
-      if (!data) {
+      const data = await localforage.getItem(ALBUM_DATA_WSK) as [] | null;
+      if (!data || data?.length === 0) {
         await localforage.setItem(ALBUM_DATA_WSK, initialData);
         await localforage.setItem(LAST_UPDATE_DATE_TIME, Date.now());
       }

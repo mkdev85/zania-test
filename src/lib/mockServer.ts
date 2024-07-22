@@ -5,6 +5,9 @@ export const initMockServer = async () => {
     const { setupWorker } = await import("msw/browser");
     const worker = setupWorker(...workerHandlers);
 
-    await worker.start();
+    await worker.start({
+      quiet: true,
+      onUnhandledRequest: 'bypass'
+    });
   }
 };
